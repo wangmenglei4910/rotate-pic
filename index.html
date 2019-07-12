@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html ondragstart="return false">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style type="text/css">
+    body{
+        margin:0;
+        background: #000;
+        overflow: hidden;
+    }
+    #perspective{
+        perspective: 800px;/*景深*/
+    }
+    #wrap{
+        position: relative;
+        width:133px;
+        height: 200px;
+        /* border:1px solid red; */
+        margin:200px auto;
+        transform-style: preserve-3d;/*设置3d场景风格*/
+        transform: rotateX(-20deg) rotateY(0deg);/*旋转度数*/
+    }
+    #wrap img{
+        position:absolute;
+        box-shadow: 0 0 10px #FFFFFF;
+        border-radius:10px;
+        /* box-reflect:below 8px linear-gradient(top,rgba(0,0,0,0) 40%,rgba(0,0,0,.7) 100%); */
+        -webkit-box-reflect:below 8px -webkit-linear-gradient(top,rgba(0,0,0,0) 40%,rgba(0,0,0,.7) 100%);
+    }
+
+
+    </style>
+</head>
+<body>
+    <div id="perspective">
+        <div id="wrap">
+            <img src="img/1.jpg" alt="">
+            <img src="img/2.jpg" alt="">
+            <img src="img/3.jpg" alt="">
+            <img src="img/4.jpg" alt="">
+            <img src="img/5.jpg" alt="">
+            <img src="img/6.jpg" alt="">
+            <img src="img/7.jpg" alt="">
+            <img src="img/8.jpg" alt="">
+            <img src="img/9.jpg" alt="">
+            <img src="img/10.jpg" alt="">
+            <img src="img/11.jpg" alt="">
+        </div>
+    </div>
+<script>
+    var oImg=document.getElementsByTagName('img');
+    var length=oImg.length;
+    var deg=360/length;
+    var oWrap =document.getElementById("wrap")
+    //遍历到所有图片
+    //旋转图片
+    //页面加载完之后在执行
+    window.onload=function(){
+        Array.prototype.forEach.call(oImg,function(ele,index,self){
+        ele.style.transform="rotateY("+deg*index+"deg) translateZ(350px)";//旋转，展开
+        ele.style.transition="1s "+(length-index)*0.1+"s";
+    })
+    }
+    // 拖拽
+    //     鼠标滑过页面 相册旋转 计算wrap相册的transform的rotateX() rotateY()的值  
+    //     按下鼠标 不松开 移动过程中计算   松开之后停止计算
+    //     每一次移动  相册旋转多少  两次移动位置的差值
+    //  
+    var minusX,minusY,lastX=0,lastY=0,rotX=-20,rotY=0;
+   
+
+    document.onmousedown=function(ev){
+        lastX=ev.clientX;
+        lastY=ev.clientY;
+       
+    document.onmousemove=function(ev){
+       
+        var newX,newY;
+        //初始位置
+        newX=ev.clientX;
+        newY=ev.clientY;
+        console.log(lastX,lastY)
+
+        minusX=newX-lastX;
+        minusY=newY-lastY;
+        
+        //乘0.2降低速度
+        rotX -=minusY*0.2;
+        rotY +=minusX*0.1;
+        
+    
+        // console.log(minusX,minusY)
+        oWrap.style.transform="rotateX("+rotX+"deg) rotateY("+rotY+"deg)";
+        //新位置用完，变成下次的旧位置
+        lastX=newX;
+        lastY=newY;
+        
+    }
+}
+   document.onmouseup=function(ev){
+        // console.log(333)
+        document.onmousemove=null;//清除鼠标移动事件
+    }
+    
+
+</script>
+</body>
+</html>
+<!-- 
+    1.设置场景景深
+    2.给元素设置3D风格
+    3.给图片旋转角度
+    4.散开图片
+    5.动画效果，开场散开，运动轨迹  
+      页面加载完之后在执行动画效果
+    6.拖拽
+
+ -->
